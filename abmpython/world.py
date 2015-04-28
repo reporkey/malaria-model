@@ -1,15 +1,16 @@
 class World():
     
-    def __init__(self):
+    def __init__(self, size):
         self.environment = None        
         self.agents = []
         
         self.comm_messages = []
         
         # World Size
-        self.x_range = [0, 1000]
-        self.y_range = [0, 1]
-        self.z_range = [0, 1]
+        self.x_range = size[0]
+        self.y_range = size[1]
+        if(len(size) == 3):
+            self.z_range = size[2]
         
     def add_agent(self, agent):
         self.agents.append(agent)
@@ -18,7 +19,7 @@ class World():
     #   - Observe Environment 
     #   - Send out Communication
     #   - Receive Communication and Perform Action
-    def update(self):
+    def update(self, delta):
         if(self.environment):
             self.environment.update()
         
@@ -38,4 +39,4 @@ class World():
         # Perform the (planned) action
         #   - Action can be influenced based comm_message (e.g. planned action might cause collision)
         for agent in self.agents:
-            agent.update(self)
+            agent.update(self, delta)
