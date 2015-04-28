@@ -1,6 +1,9 @@
-import matplotlib.pyplot as plt
 import numpy as np
 import time
+
+# Visualization
+import matplotlib.pyplot as plt
+import mpl_toolkits.mplot3d
 
 class Draw():
     
@@ -27,6 +30,7 @@ class Draw():
 fps = 30.0
 fps_ms = 1.0/fps
 engine = Draw()
+
 for i in range(1000):
     engine.draw_plot(i)
     plt.pause(fps_ms)
