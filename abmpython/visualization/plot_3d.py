@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib
 # Other backends that can potentially be used:
 # http://matplotlib.org/faq/usage_faq.html
-matplotlib.use('TkAgg')
+matplotlib.use('Qt4Agg')
 
 import matplotlib.pyplot as plt
 import mpl_toolkits.mplot3d
@@ -51,6 +51,7 @@ class Plot3D():
         self.fig.canvas.draw()
         self.fig.canvas.flush_events()        
     
+    ### DEPRECATED ###
     # use flush_events not pause()
     # http://bastibe.de/2013-05-30-speeding-up-matplotlib.html
     def pause(self, seconds):
