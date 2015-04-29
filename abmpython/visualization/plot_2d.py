@@ -29,9 +29,22 @@ class Plot2D():
     def on_key(self, event):
         if(event.key == 'escape'):
             self.app.state = self.app.STATE_QUITTING
+        elif(event.key == ' '):
+            if(self.app.state == self.app.STATE_RUNNING):
+                self.app.state = self.app.STATE_PAUSED
+            elif(self.app.state == self.app.STATE_PAUSED):
+                self.app.state = self.app.STATE_RUNNING
             
     def draw(self, world):
         self.clear(world)
+        
+        x_food = []
+        y_food = []
+        if(world.environment):
+            food = world.environment.food
+            for f in food:
+                x_food.append(f[0])
+                y_food.append(f[1])
         
         x_values = []
         y_values = []
@@ -40,7 +53,8 @@ class Plot2D():
             x_values.append(x)
             y_values.append(y)
         
-        self.ax.scatter(x_values, y_values)
+        self.ax.scatter(x_values, y_values, color='blue')
+        self.ax.scatter(x_food, y_food, color='red')
         
         self.fig.canvas.draw()
         self.fig.canvas.flush_events()        

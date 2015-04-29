@@ -17,7 +17,7 @@ class Plot3D():
         plt.show()
         self.fig = plt.figure()        
         self.ax = self.fig.gca(projection='3d')
-        self.fig.canvas.mpl_connect('key_press_event', self.on_key)
+        self.fig.canvas.mpl_connect('key_press_event', self.on_key)    
     
     def clear(self, world):
         self.ax.clear()
@@ -33,9 +33,24 @@ class Plot3D():
     def on_key(self, event):
         if(event.key == 'escape'):
             self.app.state = self.app.STATE_QUITTING
+        elif(event.key == ' '):
+            if(self.app.state == self.app.STATE_RUNNING):
+                self.app.state = self.app.STATE_PAUSED
+            elif(self.app.state == self.app.STATE_PAUSED):
+                self.app.state = self.app.STATE_RUNNING
             
     def draw(self, world):
         self.clear(world)
+        
+        x_food = []
+        y_food = []
+        z_food = []
+        if(world.environment):
+            food = world.environment.food
+            for f in food:
+                x_food.append(f[0])
+                y_food.append(f[1])
+                z_food.append(f[2])
         
         x_values = []
         y_values = []
@@ -46,7 +61,8 @@ class Plot3D():
             y_values.append(y)
             z_values.append(z)
         
-        self.ax.scatter(x_values, y_values, z_values, depthshade=False)
+        self.ax.scatter(x_values, y_values, z_values, color='blue', depthshade=False)
+        self.ax.scatter(x_food, y_food, z_food, color='red', depthshade=False)        
         
         self.fig.canvas.draw()
         self.fig.canvas.flush_events()        

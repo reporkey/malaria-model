@@ -39,6 +39,10 @@ class App():
                 
                 # Draw the world
                 self.renderer.draw(self.world)
+            
+            elif(self.state == self.STATE_PAUSED):
+                self.last_frame_time = time.time()
+                self.renderer.draw(self.world)
                          
             elif(self.state == self.STATE_QUITTING):
                 self.renderer.close()

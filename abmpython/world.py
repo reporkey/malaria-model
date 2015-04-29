@@ -1,19 +1,22 @@
 class World():
     
-    def __init__(self, size):
-        self.environment = None        
-        self.agents = []
-        
-        self.comm_messages = []
-        
+    def __init__(self, size):        
         # World Size
         self.x_range = size[0]
         self.y_range = size[1]
         if(len(size) == 3):
             self.z_range = size[2]
         
+        # World Information
+        self.environment = None        
+        self.agents = []
+        self.comm_messages = []            
+        
     def add_agent(self, agent):
         self.agents.append(agent)
+    
+    def set_environment(self, environment):
+        self.environment = environment
     
     # Agents behaviour:
     #   - Observe Environment 
@@ -21,7 +24,7 @@ class World():
     #   - Receive Communication and Perform Action
     def update(self, delta):
         if(self.environment):
-            self.environment.update()
+            self.environment.update(delta)
         
         # First let the agent observe the current world.
         #   - While observing, agent should create a plan on what it wants to do
