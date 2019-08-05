@@ -1,25 +1,29 @@
-from abmpython.app import App
-from abmpython.agent.simple_agent import SimpleAgent
-from abmpython.agent.complex_agent import ComplexAgent
 
-from abmpython.environment.food_environment import FoodEnvironment
+POPULATION_SIZE = 10
+INFECTIOUS_RATE = 0.2
 
-# Initialize the System Object with the type of visualization
-# Pick either '2d' or '3d'
-abm = App(visualization='2d')
+TOTAL_TIME = 10
 
-# Define size of the world (value ranges x,y,z)
-world_size = [  [0, 1000],
-                [0, 1000],
-                [0, 1000] ]
-abm.create_world(world_size)
+class Agent:
+    def __init__(self, is_infected):
+        self.is_infected = is_infected
 
-# Add an Environment
-abm.world.set_environment( FoodEnvironment() )
+class Population:
+    def __init__(self, population_size, infected_size, suspected_size):
+        self.population_size = population_size
+        self.infected_size = infected_size
+        self.suspected_size = suspected_size
+        self.recovery_size = 0
+        self.population = []
 
-# Add in Agents
-for i in range(0, 10):
-    abm.world.add_agent(ComplexAgent())
-    
-# Start Simulation
-abm.start()
+        # init agents
+        for i in range(infected_size):
+            agent = Agent(is_infected=True)
+            self.population.append(agent)
+        for i in range(suspected_size):
+            agent = Agent(is_infected=False, is_suspected=True)
+            self.population.append(agent)
+
+# simulation start
+while True:
+    if
