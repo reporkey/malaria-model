@@ -1,117 +1,107 @@
-from functools import reduce
-from enum import *
 from random import *
 import numpy as np
 import matplotlib.pyplot as plt
+from population import *
+from individual import *
+from mosquito import *
 
-# N = 100                      # Population size
-# SUSCEPTIBLE_SIZE = 95
-# INFECTIOUS_SIZE = 5
-# IMMUNE_SIZE = 0
+'''
+Example of Influenza
+This model ignores:
+pre-infectious, age pattern
+vaccine(p.126)?
 
-# Beta = 0.1                  # Rate at which two specific individuals come into effective contact
-# RECOVERY_RATE = 0.2
-# IMMUNE_REMOVE_RATE = 0.2
-# MAX_CONTACT_NUMBER = 10    # Max number of contacted individual with a single per time unit
+Equestions(p.334)
+'''
+# R0 = 2                                  # p.30,75,79
+# D_I = 2         # duration of I         # p.30
+# ce = R0/D_I     # effective contact     # p.32
+# Beta = R0/N/D_I                         # p.32
+# Lamda = Beta*I                          # p.32
 
+N = 1000
+S = 995
+PI = 0
+I = 5
+R = 0
+beta_M_H = 0.89
+beta_H_M = 0.40
+lambda_PI_I = 1/12
+lambda_I_R = 1/200
+bite_per_day = 1/3
 
-# plot setting
+""" for plot """
+time = 0
+num_of_susceptible = []
+num_of_pre_infectious = []
+num_of_infectious = []
+num_of_recovery = []
 
-# breakout size comparison by vary beta
-N = 5000
-SUSCEPTIBLE_SIZE = 995
-INFECTIOUS_SIZE = 5
-IMMUNE_SIZE = 0
-MAX_CONTACT_NUMBER = 10
-RECOVERY_RATE = 0
-IMMUNE_REMOVE_RATE = 0
+# create world
+mos = Mosquito(beta=beta_H_M, bite_per_day=bite_per_day)
+population = Population(N, S, PI, I, R)
 
-BETAS = np.linspace(start=0.1, stop=1, num=10)
-results = []
+num_of_susceptible.append(population.S_size)
+num_of_pre_infectious.append(population.PI_size)
+num_of_infectious.append(population.I_size)
+num_of_recovery.append(population.R_size)
 
+# simulation start
+while population.I_size != population.N_size and population.I_size != 0:
 
+    # update mosquito
+    mos.update(population)
 
-
-class State(Enum):
-    SUSCEPTIBLE = auto()
-    INFECTIOUS = auto()
-    IMMUNE = auto()
-
-class Individual:
-    def __init__(self, state: State):
-        self.state = state
-
-class Population:
-    def __init__(self, individuals=None):
-        if individuals is None:
-            self.population_size = N
-            self.susceptible_size = SUSCEPTIBLE_SIZE
-            self.infectious_size = INFECTIOUS_SIZE
-            self.immune_size = IMMUNE_SIZE
-            self.individuals = []
-            self.generate()
+    # susceptible => pre-infectious
+    p = mos.frac_I * mos.bite_per_day * beta_M_H
+    for individual in population.filter(State.S):
+        if random() < p:
+            individual.state = State.PI
+            individual.duration = 0
         else:
-            self.individuals = individuals
-            self.update_size()
+            individual.duration += 1
 
-    # generate individuals
-    def generate(self):
-        for _ in range(self.susceptible_size):
-            self.individuals.append(Individual(state=State.SUSCEPTIBLE))
-        for _ in range(self.infectious_size):
-            self.individuals.append(Individual(state=State.INFECTIOUS))
-        for _ in range(self.immune_size):
-            self.individuals.append(Individual(state=State.IMMUNE))
+    # pre-infectious update => infectious
+    p = lambda_PI_I
+    for individual in population.filter(State.PI):
+        if random() < p:
+            individual.state = State.I
+            individual.duration = 0
+        else:
+            individual.duration += 1
 
-    # filter out individuals in certain state, e.g population.filter(State.IMMUNE) => [immune indi]
-    def filter(self, state: State):
-        return filter(lambda individual: (individual.state is state), self.individuals)
+    # infectious => recovery
+    p = lambda_I_R
+    for individual in population.filter(State.I):
+        if random() < p:
+            individual.state = State.R
+            individual.duration = 0
+        else:
+            individual.duration += 1
 
-    def update_size(self):
-        self.susceptible_size = len(list(self.filter(State.SUSCEPTIBLE)))
-        self.infectious_size = len(list(self.filter(State.INFECTIOUS)))
-        self.immune_size = len(list(self.filter(State.IMMUNE)))
-        self.population_size = self.susceptible_size + self.infectious_size + self.immune_size
+    # population number update
+    population.update_size()
 
-
-for Beta in BETAS:
-    breakout = 0
-    for _ in range(100):
-        # create world
-        population = Population()
-        # simulation start
-        while population.infectious_size != population.population_size\
-        and population.infectious_size != 0:
-            breakout += 1
-            # susceptible => infectious update
-            contact = Population(individuals=sample(population.individuals, MAX_CONTACT_NUMBER))
-            p = 1 - (1-Beta)**contact.infectious_size
-            for individual in population.filter(State.SUSCEPTIBLE):
-                if random() < p:
-                    individual.state = State.INFECTIOUS
-            # infectious => immune update
-            for individual in population.filter(State.INFECTIOUS):
-                if random() < RECOVERY_RATE:
-                    individual.state = State.IMMUNE
-            # immune => susceptible update
-            for individual in population.filter(State.IMMUNE):
-                if random() < IMMUNE_REMOVE_RATE:
-                    individual.state = State.SUSCEPTIBLE
-            # population size update
-            population.update_size()
-    results.append(round(breakout/100))
-    breakout = 0
+    # for plot
+    time += 1
+    num_of_susceptible.append(population.S_size)
+    num_of_pre_infectious.append(population.PI_size)
+    num_of_infectious.append(population.I_size)
+    num_of_recovery.append(population.R_size)
 
 
-print(results)
-
-# Data for plotting
-
+""" Data for plotting """
+time = np.arange(start=0, stop=time+1, step=1)
 fig, ax = plt.subplots()
-ax.plot(BETAS, results)
+ax.plot(time, num_of_susceptible)
+ax.plot(time, num_of_pre_infectious)
+ax.plot(time, num_of_infectious)
+ax.plot(time, num_of_recovery)
 
-ax.set(xlabel='beta', ylabel='breakout size',
-       title='Breakout size comparison with varies beta settings')
+ax.set(xlabel='time step', ylabel='number of infectious',
+       title='Trend of SIR through time')
+plt.legend(['num_of_susceptible', 'num_of_pre_infectious', 'num_of_infectious', 'num_of_recovery'])
+
 ax.grid()
 
 fig.savefig("test.png")
