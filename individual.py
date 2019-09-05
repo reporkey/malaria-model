@@ -3,7 +3,7 @@ from enum import *
 
 class State(Enum):
     S = auto()
-    PI = auto()
+    E = auto()
     I = auto()
     R = auto()
 

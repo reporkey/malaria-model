@@ -2,11 +2,11 @@ from individual import *
 
 
 class Population:
-    def __init__(self, N=None, S=None, PI=None, I=None, R=None, individuals=None):
+    def __init__(self, N=None, S=None, E=None, I=None, R=None, individuals=None):
         if individuals is None:
             self.N_size = N
             self.S_size = S
-            self.PI_size = PI
+            self.E_size = E
             self.I_size = I
             self.R_size = R
             self.individuals = []
@@ -30,7 +30,7 @@ class Population:
 
     def update_size(self):
         self.S_size = len(list(self.filter(State.S)))
-        self.PI_size = len(list(self.filter(State.PI)))
+        self.E_size = len(list(self.filter(State.E)))
         self.I_size = len(list(self.filter(State.I)))
         self.R_size = len(list(self.filter(State.R)))
         self.N_size = self.S_size + self.I_size + self.R_size

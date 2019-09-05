@@ -21,14 +21,17 @@ Equestions(p.334)
 
 N = 1000
 S = 995
-PI = 0
+E = 0
 I = 5
 R = 0
 beta_M_H = 0.89
-beta_H_M = 0.40
-lambda_PI_I = 1/12
+beta_H_M = 0.20
+lambda_E_I = 1/12
 lambda_I_R = 1/200
+lambda_R_S = 1/30
+
 bite_per_day = 1/3
+life_expectancy = 10
 
 """ for plot """
 time = 0
@@ -36,34 +39,39 @@ num_of_susceptible = []
 num_of_pre_infectious = []
 num_of_infectious = []
 num_of_recovery = []
+mosI = []
 
 # create world
-mos = Mosquito(beta=beta_H_M, bite_per_day=bite_per_day)
-population = Population(N, S, PI, I, R)
+population = Population(N, S, E, I, R)
+mos = Mosquito(beta=beta_H_M,
+               bite_per_day=bite_per_day,
+               life_expectancy=life_expectancy,
+               population=population)
 
 num_of_susceptible.append(population.S_size)
-num_of_pre_infectious.append(population.PI_size)
+num_of_pre_infectious.append(population.E_size)
 num_of_infectious.append(population.I_size)
 num_of_recovery.append(population.R_size)
+mosI.append(mos.I)
 
 # simulation start
-while population.I_size != population.N_size and population.I_size != 0:
+while not (population.I_size == population.N_size or population.I_size == 0 or time == 2000):
 
     # update mosquito
     mos.update(population)
 
     # susceptible => pre-infectious
-    p = mos.frac_I * mos.bite_per_day * beta_M_H
+    p = mos.I * mos.bite_per_day * beta_M_H
     for individual in population.filter(State.S):
         if random() < p:
-            individual.state = State.PI
+            individual.state = State.E
             individual.duration = 0
         else:
             individual.duration += 1
 
     # pre-infectious update => infectious
-    p = lambda_PI_I
-    for individual in population.filter(State.PI):
+    p = lambda_E_I
+    for individual in population.filter(State.E):
         if random() < p:
             individual.state = State.I
             individual.duration = 0
@@ -79,15 +87,25 @@ while population.I_size != population.N_size and population.I_size != 0:
         else:
             individual.duration += 1
 
+    # recovery => susceptible
+    p = lambda_R_S
+    for individual in population.filter(State.R):
+        if random() < p:
+            individual.state = State.S
+            individual.duration = 0
+        else:
+            individual.duration += 1
+
     # population number update
     population.update_size()
 
     # for plot
     time += 1
     num_of_susceptible.append(population.S_size)
-    num_of_pre_infectious.append(population.PI_size)
+    num_of_pre_infectious.append(population.E_size)
     num_of_infectious.append(population.I_size)
     num_of_recovery.append(population.R_size)
+    mosI.append(mos.I)
 
 
 """ Data for plotting """
@@ -98,11 +116,35 @@ ax.plot(time, num_of_pre_infectious)
 ax.plot(time, num_of_infectious)
 ax.plot(time, num_of_recovery)
 
-ax.set(xlabel='time step', ylabel='number of infectious',
-       title='Trend of SIR through time')
-plt.legend(['num_of_susceptible', 'num_of_pre_infectious', 'num_of_infectious', 'num_of_recovery'])
-
+ax.set(xlabel='Time step', ylabel='Number of infectious',
+       title='SIRS (1/12, 1/200, 1/30)')
+plt.legend(['S', 'E', 'I', 'R'])
 ax.grid()
 
-fig.savefig("test.png")
+fig.savefig("temp.png")
 plt.show()
+
+""" Mos """
+fig1, ax1 = plt.subplots()
+ax1.plot(time, mosI)
+
+ax1.set(xlabel='Time step', ylabel='I of Mos',
+       title='Infectious mosquitoes')
+plt.legend(['I'])
+ax1.grid()
+
+fig1.savefig("temp1.png")
+plt.show()
+
+"""Analysis result"""
+mean_S = np.mean(num_of_susceptible[1000:])
+mean_E = np.mean(num_of_pre_infectious[1000:])
+mean_I = np.mean(num_of_infectious[1000:])
+mean_R = np.mean(num_of_recovery[1000:])
+mean_Mos_I = np.mean(mosI[1000:])
+
+print("mean_S: %d" %(mean_S))
+print("mean_E: %d" %(mean_E))
+print("mean_I: %d" %(mean_I))
+print("mean_R: %d" %(mean_R))
+print("mean_Mos_I: %f3" %(mean_Mos_I))
