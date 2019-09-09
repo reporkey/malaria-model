@@ -9,8 +9,8 @@ class Mosquito:
 
     def update(self, population):
 
-        # 1/10 mos die, replaced b/ (1-1/10)y new born healthy mos
-        self.I = self.I * (1 - 1/self.life_expectancy)
-        self.I = self.beta * self.bite_per_day * population.I_size / population.N_size
+        # 1/10 mos die, replaced by (1-1/10) new born healthy mos + new infections
+        self.I = self.I * (1 - 1/self.life_expectancy) + \
+                 (1-self.I) * self.beta * self.bite_per_day * population.I_size / population.N_size
 
 
