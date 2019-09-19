@@ -1,4 +1,3 @@
-from random import *
 import numpy as np
 import matplotlib.pyplot as plt
 from population import *
@@ -63,7 +62,7 @@ while not (population.I_size == population.N_size or population.I_size == 0 or t
     # susceptible => pre-infectious
     p = mos.I * mos.bite_per_day * beta_M_H
     for individual in population.filter(State.S):
-        if random() < p:
+        if np.random.poisson() < p:
             individual.state = State.E
             individual.duration = 0
         else:
@@ -72,7 +71,7 @@ while not (population.I_size == population.N_size or population.I_size == 0 or t
     # pre-infectious update => infectious
     p = lambda_E_I
     for individual in population.filter(State.E):
-        if random() < p:
+        if individual.duration >= 1/p:
             individual.state = State.I
             individual.duration = 0
         else:
@@ -81,7 +80,7 @@ while not (population.I_size == population.N_size or population.I_size == 0 or t
     # infectious => recovery
     p = lambda_I_R
     for individual in population.filter(State.I):
-        if random() < p:
+        if individual.duration >= 1/p:
             individual.state = State.R
             individual.duration = 0
         else:
@@ -90,7 +89,7 @@ while not (population.I_size == population.N_size or population.I_size == 0 or t
     # recovery => susceptible
     p = lambda_R_S
     for individual in population.filter(State.R):
-        if random() < p:
+        if individual.duration >= 1/p:
             individual.state = State.S
             individual.duration = 0
         else:
