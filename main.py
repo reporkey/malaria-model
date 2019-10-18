@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from scipy.stats import poisson
 from population import *
 from individual import *
 from mosquito import *
@@ -18,10 +19,10 @@ Equestions(p.334)
 # Beta = R0/N/D_I                         # p.32
 # Lamda = Beta*I                          # p.32
 
-N = 1000
-S = 995
+N = 5
+S = 1
 E = 0
-I = 5
+I = 4
 R = 0
 beta_M_H = 0.89
 beta_H_M = 0.20
@@ -54,18 +55,24 @@ num_of_recovery.append(population.R_size)
 mosI.append(mos.I)
 
 # simulation start
-while not (population.I_size == population.N_size or population.I_size == 0 or time == 2000):
+while population.I_size != population.N_size and population.I_size != 0 and time < 2000:
 
     # update mosquito
     mos.update(population)
 
     # susceptible => pre-infectious
     p = mos.I * mos.bite_per_day * beta_M_H
+    rv = poisson(1 / p)
     for individual in population.filter(State.S):
-        if np.random.poisson() < p:
+
+        if individual.CDF > individual.threshold:
             individual.state = State.E
+            individual.CDF = 0
             individual.duration = 0
+            individual.threshold = np.random.uniform(0, 1)
         else:
+            diff = (rv.cdf(individual.duration+1) - rv.cdf(individual.duration))
+            individual.CDF += diff
             individual.duration += 1
 
     # pre-infectious update => infectious
@@ -120,7 +127,7 @@ ax.set(xlabel='Time step', ylabel='Number of infectious',
 plt.legend(['S', 'E', 'I', 'R'])
 ax.grid()
 
-fig.savefig("temp.png")
+# fig.savefig("temp.png")
 plt.show()
 
 """ Mos """
@@ -132,7 +139,7 @@ ax1.set(xlabel='Time step', ylabel='I of Mos',
 plt.legend(['I'])
 ax1.grid()
 
-fig1.savefig("temp1.png")
+# fig1.savefig("temp1.png")
 plt.show()
 
 """Analysis result"""
