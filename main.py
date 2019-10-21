@@ -13,16 +13,17 @@ vaccine(p.126)?
 
 Equestions(p.334)
 '''
+
 # R0 = 2                                  # p.30,75,79
 # D_I = 2         # duration of I         # p.30
 # ce = R0/D_I     # effective contact     # p.32
 # Beta = R0/N/D_I                         # p.32
 # Lamda = Beta*I                          # p.32
 
-N = 5
-S = 1
+N = 1000
+S = 940
 E = 0
-I = 4
+I = 60
 R = 0
 beta_M_H = 0.89
 beta_H_M = 0.20
@@ -55,7 +56,7 @@ num_of_recovery.append(population.R_size)
 mosI.append(mos.I)
 
 # simulation start
-while population.I_size != population.N_size and population.I_size != 0 and time < 2000:
+while population.I_size != population.N_size and (population.I_size + population.E_size) != 0 and time < 2000:
 
     # update mosquito
     mos.update(population)
@@ -64,7 +65,6 @@ while population.I_size != population.N_size and population.I_size != 0 and time
     p = mos.I * mos.bite_per_day * beta_M_H
     rv = poisson(1 / p)
     for individual in population.filter(State.S):
-
         if individual.CDF > individual.threshold:
             individual.state = State.E
             individual.CDF = 0
@@ -77,29 +77,44 @@ while population.I_size != population.N_size and population.I_size != 0 and time
 
     # pre-infectious update => infectious
     p = lambda_E_I
+    rv = poisson(1 / p)
     for individual in population.filter(State.E):
-        if individual.duration >= 1/p:
+        if individual.CDF > individual.threshold:
             individual.state = State.I
+            individual.CDF = 0
             individual.duration = 0
+            individual.threshold = np.random.uniform(0, 1)
         else:
+            diff = (rv.cdf(individual.duration + 1) - rv.cdf(individual.duration))
+            individual.CDF += diff
             individual.duration += 1
 
     # infectious => recovery
     p = lambda_I_R
+    rv = poisson(1 / p)
     for individual in population.filter(State.I):
-        if individual.duration >= 1/p:
+        if individual.CDF > individual.threshold:
             individual.state = State.R
+            individual.CDF = 0
             individual.duration = 0
+            individual.threshold = np.random.uniform(0, 1)
         else:
+            diff = (rv.cdf(individual.duration + 1) - rv.cdf(individual.duration))
+            individual.CDF += diff
             individual.duration += 1
 
     # recovery => susceptible
     p = lambda_R_S
+    rv = poisson(1 / p)
     for individual in population.filter(State.R):
-        if individual.duration >= 1/p:
+        if individual.CDF > individual.threshold:
             individual.state = State.S
+            individual.CDF = 0
             individual.duration = 0
+            individual.threshold = np.random.uniform(0, 1)
         else:
+            diff = (rv.cdf(individual.duration + 1) - rv.cdf(individual.duration))
+            individual.CDF += diff
             individual.duration += 1
 
     # population number update
@@ -127,7 +142,7 @@ ax.set(xlabel='Time step', ylabel='Number of infectious',
 plt.legend(['S', 'E', 'I', 'R'])
 ax.grid()
 
-# fig.savefig("temp.png")
+fig.savefig("temp.png")
 plt.show()
 
 """ Mos """
@@ -139,15 +154,16 @@ ax1.set(xlabel='Time step', ylabel='I of Mos',
 plt.legend(['I'])
 ax1.grid()
 
-# fig1.savefig("temp1.png")
+fig1.savefig("temp1.png")
 plt.show()
 
 """Analysis result"""
-mean_S = np.mean(num_of_susceptible[1000:])
-mean_E = np.mean(num_of_pre_infectious[1000:])
-mean_I = np.mean(num_of_infectious[1000:])
-mean_R = np.mean(num_of_recovery[1000:])
-mean_Mos_I = np.mean(mosI[1000:])
+
+mean_S = np.mean(num_of_susceptible)
+mean_E = np.mean(num_of_pre_infectious)
+mean_I = np.mean(num_of_infectious)
+mean_R = np.mean(num_of_recovery)
+mean_Mos_I = np.mean(mosI)
 
 print("mean_S: %d" %(mean_S))
 print("mean_E: %d" %(mean_E))
