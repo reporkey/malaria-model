@@ -20,11 +20,11 @@ Equestions(p.334)
 # Beta = R0/N/D_I                         # p.32
 # Lamda = Beta*I                          # p.32
 
-N = 1000
-S = 940
-E = 0
-I = 60
-R = 0
+N = 10000
+S = 9995
+E = 1
+I = 2
+R = 2
 beta_M_H = 0.89
 beta_H_M = 0.20
 lambda_E_I = 1/12
@@ -63,16 +63,13 @@ while population.I_size != population.N_size and (population.I_size + population
 
     # susceptible => pre-infectious
     p = mos.I * mos.bite_per_day * beta_M_H
-    rv = poisson(1 / p)
     for individual in population.filter(State.S):
-        if individual.CDF > individual.threshold:
+        if np.random.uniform() < p:
             individual.state = State.E
             individual.CDF = 0
             individual.duration = 0
             individual.threshold = np.random.uniform(0, 1)
         else:
-            diff = (rv.cdf(individual.duration+1) - rv.cdf(individual.duration))
-            individual.CDF += diff
             individual.duration += 1
 
     # pre-infectious update => infectious
@@ -132,14 +129,14 @@ while population.I_size != population.N_size and (population.I_size + population
 """ Data for plotting """
 time = np.arange(start=0, stop=time+1, step=1)
 fig, ax = plt.subplots()
-ax.plot(time, num_of_susceptible)
-ax.plot(time, num_of_pre_infectious)
-ax.plot(time, num_of_infectious)
-ax.plot(time, num_of_recovery)
+ax.plot(time, num_of_susceptible, color='green', label='S')
+ax.plot(time, num_of_pre_infectious, color='orange', label='E')
+ax.plot(time, num_of_infectious, color='red', label='I')
+ax.plot(time, num_of_recovery, color='blue', label='R')
 
 ax.set(xlabel='Time step', ylabel='Number of infectious',
        title='SIRS (1/12, 1/200, 1/30)')
-plt.legend(['S', 'E', 'I', 'R'])
+plt.legend()
 ax.grid()
 
 fig.savefig("temp.png")
@@ -151,7 +148,6 @@ ax1.plot(time, mosI)
 
 ax1.set(xlabel='Time step', ylabel='I of Mos',
        title='Infectious mosquitoes')
-plt.legend(['I'])
 ax1.grid()
 
 fig1.savefig("temp1.png")
