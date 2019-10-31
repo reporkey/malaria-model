@@ -28,7 +28,7 @@ R = 2
 beta_M_H = 0.89
 beta_H_M = 0.20
 lambda_E_I = 1/12
-lambda_I_R = 1/200
+lambda_I_R = 1/20
 lambda_R_S = 1/30
 
 bite_per_day = 1/3
@@ -56,7 +56,7 @@ num_of_recovery.append(population.R_size)
 mosI.append(mos.I)
 
 # simulation start
-while population.I_size != population.N_size and (population.I_size + population.E_size) != 0 and time < 2000:
+while population.I_size != population.N_size and (population.I_size + population.E_size) != 0 and time < 1000:
 
     # update mosquito
     mos.update(population)
