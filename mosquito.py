@@ -1,3 +1,5 @@
+from individual import State
+
 class Mosquito:
 
     def __init__(self, beta, bite_per_day, life_expectancy, population):
@@ -9,8 +11,10 @@ class Mosquito:
 
     def update(self, population):
 
+        I = sum([i.getG() for i in population.filter(State.S)])
+
         # 1/10 mos die, replaced by (1-1/10) new born healthy mos + new infections
         self.I = self.I * (1 - 1/self.life_expectancy) + \
-                 (1-self.I) * self.beta * self.bite_per_day * population.I_size / population.N_size
+                 (1-self.I) * self.beta * self.bite_per_day * I / population.N_size
 
 

@@ -1,5 +1,5 @@
 from individual import *
-
+from numpy import random
 
 class Population:
     def __init__(self, N=None, S=None, E=None, I=None, R=None, individuals=None):
@@ -19,8 +19,10 @@ class Population:
     def generate(self):
         for _ in range(self.S_size):
             self.individuals.append(Individual(state=State.S))
+        for _ in range(self.E_size):
+            self.individuals.append(Individual(state=State.E))
         for _ in range(self.I_size):
-            self.individuals.append(Individual(state=State.I))
+            self.individuals.append(Individual(state=State.I, duration=random.choice(range(28))))
         for _ in range(self.R_size):
             self.individuals.append(Individual(state=State.R))
 
