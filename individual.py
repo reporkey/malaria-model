@@ -17,14 +17,13 @@ Gmax = 1
 
 class Individual:
 
-    def __init__(self, state: State, CDF=0, duration=0, threshold=np.random.uniform(0, 1)):
+    def __init__(self, state: State, duration=0, threshold=np.random.uniform(0, 1)):
         self.state = state
-        self.CDF = CDF
         self.duration = duration
         self.threshold = threshold
 
     def getG(self):
-        if self.state == State.I:
+        if self.state == State.I or self.state == State.E:
             x = self.duration
             G = (x ** n / (x ** n + k ** n) - o / (1 + o)) * (1 + o) * Gmax
         else:

@@ -1,8 +1,9 @@
 from individual import *
 from numpy import random
 
+
 class Population:
-    def __init__(self, N=None, S=None, E=None, I=None, R=None, individuals=None):
+    def __init__(self, N=0, S=0, E=0, I=0, R=0, individuals=None):
         if individuals is None:
             self.N_size = N
             self.S_size = S
@@ -20,9 +21,10 @@ class Population:
         for _ in range(self.S_size):
             self.individuals.append(Individual(state=State.S))
         for _ in range(self.E_size):
-            self.individuals.append(Individual(state=State.E))
+            self.individuals.append(Individual(state=State.E, duration=np.random.choice(28), threshold=np.random.normal(0.24, 0.11)))
         for _ in range(self.I_size):
-            self.individuals.append(Individual(state=State.I, duration=random.choice(range(28))))
+            self.individuals.append(Individual(state=State.I, duration=np.random.randint(13, 28), threshold=np.random.uniform(0, 1)))
+            self.individuals.symptomTime = 13
         for _ in range(self.R_size):
             self.individuals.append(Individual(state=State.R))
 
