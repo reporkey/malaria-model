@@ -16,8 +16,7 @@ parasite) stage is implicitly presented. So, an additional asexual parasites dev
 
 class Mosquito:
 
-    def __init__(self, beta, bite_per_day, life_expectancy, population):
-        """Beta: from untreated disease: 0.40; from patent infection: 0.12"""
+    def __init__(self, beta, bite_per_day, life_expectancy):
         self.beta = beta
         self.bite_per_day = bite_per_day
         self.life_expectancy = life_expectancy

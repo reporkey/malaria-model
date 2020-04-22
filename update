@@ -1,0 +1,45 @@
+Currently the model still has some issues on the transmision. There are 3 approaches to describe the transmission:
+
+1. G (fractional) -> Im (fractional)
+
+Im(t+1) = Sm(t) * beta * b * G(t)
+Pros: it works previously
+Cons: Im(t+1) is not based on Im(t). not safe if beta*b > 1
+
+Modified:
+Im(t+1) = old   + new infections    - died
+        = Im(t) + Sm(t)*theta       - mu*Im(t)
+        = Im(t) + Sm(t)*beta*b*G(t) - 0.1Im(t)
+
+Again, not sate if beta*b > 1
+
+Modified:
+Im(t+1) = old   + new infections    - died
+        = Im(t) + Sm(t)*theta       - mu*Im(t)
+theta = 1 - (1 - x         )^b
+      = 1 - (1 - beta*G(t) )^b
+G(t) = sum[Infectioous g(i,t)] / Ninf
+or
+G(t) = sum[Human g(i,t)] / Nhum
+x: get infection in 1 bite
+theta: probability of infected
+
+Using old para configs, the curve quickly died out.
+But using G(t) considering whole population, with bite rate = 1/2, result: [1human, 1mos]. The oscillation is very slight, and in a very short time dynamic reaches equalibrium.
+
+
+2. Asexual (numerical) -> Im (numerical)
+
+Im(t+1) = phi[ln(a(t)*rho) / sigma]
+Pros: more precisely and reasonably
+Cons: have no source for asexual parasite level
+
+3. G (numerical) -> Im (numerical)
+
+Im(t+1) = phi[ln(a(t)*rho) / sigma]
+        = phi[ln(g(t))     / sigma]
+Since ln(g) ~ Normal(ln(a*rho), sigma^2)
+Data from Penjing's model and data from this mode is not consistent, even not in a same scale. i.e. The highest level of g in Penjing's model is about 10^3 which is in day 28 after inoculation(about to the end). In the new infectivity model the highest level of a is 10^5....
+Too complicated... No idea to substitute between different distributions.
+
+
