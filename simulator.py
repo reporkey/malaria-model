@@ -2,7 +2,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.stats import poisson
 from population import *
-from parameter import Parameter
 from mosquito import *
 from recorder import Recorder
 
@@ -25,9 +24,7 @@ class Simulator:
 
         # simulation start
         while True:
-            if population.I_size == population.N_size \
-                    or population.I_size == 0 \
-                    or self.recorder.time > 3500:
+            if self.recorder.ifTerminate():
                 return
 
             # record data
@@ -72,40 +69,3 @@ class Simulator:
 
             # population number update
             population.update_size()
-
-# """ Data for plotting """
-# time = np.arange(start=0, stop=time+1, step=1)
-#
-# """ Human """
-# fig, ax = plt.subplots()
-# ax.plot(time, num_I, color='red', label='I')
-# ax.plot(time, num_R, color='blue', label='R')
-#
-# ax.set(xlabel='Time(day)', ylabel='Population')
-# plt.legend()
-# ax.grid()
-#
-# fig.savefig("human.png")
-# plt.show()
-#
-# """ Mos """
-# fig1, ax1 = plt.subplots()
-# ax1.plot(time, I_m)
-#
-# ax1.set(xlabel='Time', ylabel='Infectivity', title='mosquitoes Infectivity')
-# ax1.grid()
-#
-# fig1.savefig("mos.png")
-# plt.show()
-#
-#
-# """Analysis result"""
-#
-# mean_I = np.mean(num_I)
-# mean_R = np.mean(num_R)
-# mean_I_m = np.mean(I_m)
-#
-# print("mean_S: %d" % mean_S)
-# print("mean_I: %d" % mean_I)
-# print("mean_R: %d" % mean_R)
-# print("mean_I_m: %f3" % mean_I_m)
