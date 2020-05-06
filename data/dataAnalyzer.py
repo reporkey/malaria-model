@@ -8,6 +8,7 @@ from itertools import zip_longest
 def normalizeRaw(raw):
 	data = {}
 	data['parameter'] = raw[0]['parameter']
+	print(data['parameter'])
 	data['time'] = max([each['time'] for each in raw])
 	for component in raw[0].keys():
 		if component == 'parameter' or component == 'time': continue
@@ -34,6 +35,7 @@ def plot():
 	for ax, case in zip(axs, cases):
 		ax.set_title('markevery=%s' % str(case))
 		ax.plot(x, y, 'o', ls='-', ms=4, markevery=case)
+		ax.fill_between(x, y, facecolor='blue', alpha=0.5)
 	plt.show()
 
 
@@ -46,4 +48,6 @@ if __name__ == '__main__':
 	#	with open('./data/preprocessed/' + fname, 'w') as f:
 	#		json.dump(data, f)
 
+	with open('./data/preprocessed/data1.json', 'r') as f:
+		raw = json.load(f)
 	plot()
