@@ -81,12 +81,12 @@ def betaplot(data):
 
 if __name__ == '__main__':
 	data = []
-	fnames = os.listdir('./raw')
+	fnames = os.listdir('./data/raw')
 	fnames = natsorted(fnames)
 
 	for fname in fnames:
-		with open('./raw/' + fname, 'r') as f:
+		with open('./data/raw/' + fname, 'r') as f:
 			raw = json.load(f)
 		data.append(normalizeRaw(raw))
-	fullplot(data)
-	# betaplot(data)
+	#fullplot(data)
+	betaplot(data)
