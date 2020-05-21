@@ -9,6 +9,7 @@ G = (x.^n ./ (x.^n + k.^n) - o/(1+o)) * (1+o) * Gmax;
 figure
 semilogy(x, G)
 plot(x, G)
-xlabel('time(day)')
+ylim([0 1])
+xlabel('Time(day)')
 ylabel('Gametocyte load')
 grid on
