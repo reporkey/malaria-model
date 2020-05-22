@@ -14,8 +14,8 @@ def runSim(parameter):
 class ParameterCompare:
 
 	def __init__(self):
-		beta_M_H = np.linspace(start=0.1, stop=0.9, num=9)
-		beta_H_M = np.linspace(start=0.1, stop=0.9, num=9)
+		beta_M_H = [0.01, 0.1, 0.2, 0.4, 0.6, 0.8, 0.9, 0.99]
+		beta_H_M = [0.01, 0.1, 0.2, 0.4, 0.6, 0.8, 0.9, 0.99]
 		day_I_R = np.linspace(start=10, stop=40, num=5)
 		day_R_S = np.linspace(start=30, stop=100, num=5)
 		bite_per_day = 1/3
@@ -27,22 +27,15 @@ class ParameterCompare:
 
 
 		for i in beta_M_H:
-			ps = [Parameter(i, 0.3, 30, 50, bite_per_day, life_expectancy) for _ in range(8)]
-			with mp.Pool(processes=8) as pool:
-				results = pool.map(runSim, ps)
-			with open('./data/raw/data' + str(index) + '.json', 'w') as f:
-				json.dump(results, f)
-			print("beta_M_H:", i)
-			index += 1
+			for j in beta_H_M:
+				ps = [Parameter(i, j, 30, 50, bite_per_day, life_expectancy) for _ in range(8)]
+				with mp.Pool(processes=8) as pool:
+					results = pool.map(runSim, ps)
+				with open('./data/raw2/data' + str(index) + '.json', 'w') as f:
+					json.dump(results, f)
+				print("beta_M_H:", i)
+				index += 1
 
-		for i in beta_H_M:
-			ps = [Parameter(0.8, i, 30, 50, bite_per_day, life_expectancy) for _ in range(8)]
-			with mp.Pool(processes=8) as pool:
-				results = pool.map(runSim, ps)
-			with open('./data/raw/data' + str(index) + '.json', 'w') as f:
-				json.dump(results, f)
-			print("beta_H_M:", i)
-			index += 1
 
 
 if __name__ == '__main__':
