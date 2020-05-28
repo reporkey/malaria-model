@@ -16,7 +16,7 @@ class Simulator:
 	def simulator(self):
 
 		# create world
-		population = Population(N=self.parameter.N, S=self.parameter.S, I=self.parameter.I, R=self.parameter.R, gPara=self.parameter.gPara)
+		population = Population(N=self.parameter.N, S=self.parameter.S, I=self.parameter.I, R=self.parameter.R)
 		mos = Mosquito(beta=self.parameter.beta_H_M,
 						bite_per_day=self.parameter.bite_per_day,
 						life_expectancy=self.parameter.life_expectancy)
@@ -28,7 +28,7 @@ class Simulator:
 
 			# record data
 			self.recorder.time += 1
-			self.recorder.append(i=population.I_size, symp=population.getSympNum(), r=population.R_size, im=mos.I, G=population.G)
+			self.recorder.append(i=population.I_size, symp=population.getSympNum(), r=population.R_size, im=mos.I)
 
 			# update mosquito
 			mos.update(population)
@@ -51,7 +51,6 @@ class Simulator:
 					individual.state = State.R
 					individual.duration = -1
 					individual.threshold = np.random.uniform(0, 1)
-					individual.resetg()
 				else:
 					individual.duration += 1
 

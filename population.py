@@ -3,14 +3,12 @@ from numpy import random
 
 
 class Population:
-	def __init__(self, gPara, N=0, S=0, I=0, R=0, individuals=None):
+	def __init__(self, N=0, S=0, I=0, R=0, individuals=None):
 		if individuals is None:
 			self.N_size = N
 			self.S_size = S
 			self.I_size = I
 			self.R_size = R
-			self.gPara = gPara
-			self.G = 0
 			self.individuals = []
 			self.generate()
 		else:
@@ -20,12 +18,11 @@ class Population:
 	# generate individuals
 	def generate(self):
 		for _ in range(self.S_size):
-			self.individuals.append(Individual(state=State.S, gPara=self.gPara))
+			self.individuals.append(Individual(state=State.S))
 		for _ in range(self.I_size):
-			self.individuals.append(Individual(state=State.I, duration=np.random.randint(20), gPara=self.gPara))
+			self.individuals.append(Individual(state=State.I, duration=np.random.randint(20)))
 		for _ in range(self.R_size):
-			self.individuals.append(Individual(state=State.R, gPara=self.gPara))
-		self.G = sum([i.g for i in self.individuals]) / self.N_size
+			self.individuals.append(Individual(state=State.R))
 
 	# filter out individuals in certain state, e.g population.filter(State.I)
 	# => [immune indi]
@@ -37,11 +34,6 @@ class Population:
 		self.I_size = len(list(self.filter(State.I)))
 		self.R_size = len(list(self.filter(State.R)))
 		self.N_size = self.S_size + self.I_size + self.R_size
-		GTotal = 0
-		for i in self.individuals:
-			i.update()
-			GTotal += i.g
-		self.G = GTotal / self.N_size
 
 	def getSympNum(self):
 		return [True for i in list(self.filter(State.I)) if i.duration >= 8 ].count(True)

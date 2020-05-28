@@ -133,13 +133,13 @@ def betaPlot(data):
 	xyHM = []
 	for d in data:
 		if d['parameter']['beta_H_M'] == 0.4:
-			aveMedian = np.mean(np.array([np.median(each) for each in d['i']]) / d['parameter']['N'])
+			aveMedian = np.mean(np.array([np.nanmedian(np.array(each,dtype=np.float64)) for each in d['i']]) / d['parameter']['N'])
 			xyMH.append((d['parameter']['beta_M_H'], aveMedian))
 		if d['parameter']['beta_M_H'] == 0.8:
-			aveMedian = np.mean(np.array([np.median(each) for each in d['i']]) / d['parameter']['N'])
+			aveMedian = np.mean(np.array([np.nanmedian(np.array(each,dtype=np.float64)) for each in d['i']]) / d['parameter']['N'])
 			xyHM.append((d['parameter']['beta_H_M'], aveMedian))
 
-	plt.title(r'Different $\beta$ in Multi-scaled Model')
+	plt.title(r'Different $\beta$ in Population Model')
 	plt.grid(True)
 	xyMH.sort()
 	x1,y1 = zip(*xyMH)
@@ -164,7 +164,7 @@ def mosquitoBetaPlot(data):
 			aveMedian = np.mean(np.array([np.median(each) for each in d['im']]) / d['parameter']['N'])
 			xyHM.append((d['parameter']['beta_H_M'], aveMedian))
 
-	plt.title(r'Proportion of infected mosquitoes with different $\beta$ in Multi-scaled Model')
+	plt.title(r'Proportion of infected mosquitoes with different $\beta$ in Population Model')
 	plt.grid(True)
 	xyMH.sort()
 	x1,y1 = zip(*xyMH)
