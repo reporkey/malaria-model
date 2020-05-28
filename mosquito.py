@@ -10,9 +10,6 @@ The model from Ross maps the infectivity to the density of asexual parasites. Ga
 parasite) stage is implicitly presented. So, an additional asexual parasites development curve is required .
 """
 
-# sigma = 3.91
-# rho = 0.00031
-
 
 class Mosquito:
 
@@ -24,16 +21,6 @@ class Mosquito:
 
     def update(self, population):
 
-        # Approach 1:
         S = 1 - self.I
-        G = sum([i.g for i in population.individuals]) / population.N_size
-        theta = 1 - (1-self.beta*G)**self.bite_per_day
+        theta = 1 - (1-self.beta*population.G)**self.bite_per_day
         self.I = self.I + theta * S - self.I / self.life_expectancy
-
-        # image the the g is asexual level
-
-        # the probability of containing 1+ gametocytes in one bitten
-
-        # asexual = np.sum([each.infectivity for each in population.filter(State.I)]) / population.N_size
-        #
-        # self.I = norm.cdf(np.log(asexual * rho) / sigma)

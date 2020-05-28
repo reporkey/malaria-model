@@ -28,7 +28,7 @@ class Simulator:
 
 			# record data
 			self.recorder.time += 1
-			self.recorder.append(i=population.I_size, symp=population.getSympNum(), r=population.R_size, im=mos.I)
+			self.recorder.append(i=population.I_size, symp=population.getSympNum(), r=population.R_size, im=mos.I, G=population.G)
 
 			# update mosquito
 			mos.update(population)
@@ -51,10 +51,9 @@ class Simulator:
 					individual.state = State.R
 					individual.duration = -1
 					individual.threshold = np.random.uniform(0, 1)
-					individual.reset()
+					individual.resetg()
 				else:
 					individual.duration += 1
-					individual.update()
 
 			# recovery => susceptible
 			rv = poisson(self.parameter.day_R_S)
@@ -66,5 +65,5 @@ class Simulator:
 				else:
 					individual.duration += 1
 
-			# population number update
-			population.update_size()
+			# population update
+			population.update()

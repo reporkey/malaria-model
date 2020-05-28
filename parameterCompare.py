@@ -28,20 +28,20 @@ class ParameterCompare:
 
 		for i in beta_M_H:
 			for j in beta_H_M:
-				ps = [Parameter(i, j, 30, 50, bite_per_day, life_expectancy) for _ in range(8)]
-				with mp.Pool(processes=8) as pool:
+				ps = [Parameter(i, j, 30, 50, bite_per_day, life_expectancy) for _ in range(6)]
+				with mp.Pool(processes=6) as pool:
 					results = pool.map(runSim, ps)
-				with open('./data/raw2/data' + str(index) + '.json', 'w') as f:
+				with open('./data/raw1/data' + str(index) + '.json', 'w') as f:
 					json.dump(results, f)
-				print("beta_M_H:", i)
+				print("beta_M_H:", i, "beta_H_M:", j)
 				index += 1
 
 
 
 if __name__ == '__main__':
-	parameterCompare = ParameterCompare()
-	# p = Parameter(0.8, 0.3, 30, 50, 1/3, 10)
-	# sim = Simulator(p)
+	#parameterCompare = ParameterCompare()
+	p = Parameter(0.8, 0.3, 30, 50, 1/3, 10)
+	sim = Simulator(p)
 
 	# """ Plot """
 	# time = np.arange(start=0, stop=sim.recorder.collectData()["time"]+1, step=1)
