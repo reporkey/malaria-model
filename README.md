@@ -1,1 +1,6 @@
-# Malaria ABM
+# Multiscale Malaria Model
+
+#### 75pt Research project for Master of Science(Computing)
+
+## Abstract
+Malaria is one of the most urgent public health issues nowadays causing serious morbidity and mortality. Over 40 countries have eliminated malaria, while a majority region of African constitutes over 90% of cases and deaths in last decade, where Plasmodium falciparum is the most prevalent malaria parasite, accounting for 99.7% of estimated malaria cases in 2018. P.f malaria parasites associated biological mechanism is complected in Anopheles mosquito vectors and human hosts. The study of anti-malaria drugs influence concerning epidemic population cannot be completed without a model involving population scale and within-host scale. This project aims to design and implement a multiscale model in an individual-based model framework, whereby the epidemic level in population level could be mapped from the parasite number change in within-host scale. In the study, several settings are compared both in a population model and the multiscale model, to validate the correctness and the usability of this multiscale model. The presence of multiscale modelling will help future study to explore the performance of drugs and interventions in epidemic prospective.
