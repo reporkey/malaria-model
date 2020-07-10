@@ -4,9 +4,9 @@ import json
 class Parameter:
 
 	def __init__(self, beta_M_H, beta_H_M, day_I_R, day_R_S, bite_per_day, life_expectancy):
-		self.N = 100000
-		self.S = 90000
-		self.I = 10000
+		self.N = 10000
+		self.S = 9000
+		self.I = 1000
 		self.R = 0
 
 		self.beta_M_H = beta_M_H

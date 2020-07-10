@@ -24,7 +24,7 @@ class Individual:
         k = self.gPara.k
         o = self.gPara.o
         gmax = self.gPara.gmax
-        self.g = (x ** n / (x ** n + k ** n) - o / (1 + o)) * (1 + o) * gmax
+        self.g = max(0, (x ** n / (x ** n + k ** n) - o / (1 + o)) * (1 + o) * gmax)
 
     def isSymp(self):
         return self.state == State.I and self.duration > 8

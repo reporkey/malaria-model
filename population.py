@@ -44,4 +44,4 @@ class Population:
 		self.G = GTotal / self.N_size
 
 	def getSympNum(self):
-		return [True for i in list(self.filter(State.I)) if i.duration >= 8 ].count(True)
+		return [True for i in list(self.filter(State.I)) if i.isSymp].count(True)

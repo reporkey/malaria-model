@@ -47,7 +47,7 @@ class Simulator:
 			# infectious => recovery
 			rv = poisson(self.parameter.day_I_R)
 			for individual in population.filter(State.I):
-				if rv.cdf(individual.duration) > individual.threshold:
+				if individual.isSymp and rv.cdf(individual.duration-8) > individual.threshold:
 					individual.state = State.R
 					individual.duration = -1
 					individual.threshold = np.random.uniform(0, 1)

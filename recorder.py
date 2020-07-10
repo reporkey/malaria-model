@@ -37,9 +37,9 @@ class Recorder:
 		if self.time > 0:
 			if self.i[-1] == 0 or self.i[-1] == self.parameters.N:
 				return True
-		if self.time > 1200:
+		if self.time > 900:
 			return True
 		if self.time > 300:
-			if max(self.i[-300:]) - min(self.i[-300:]) < 0.02 * self.parameters.N:
+			if max(self.i[-300:]) - min(self.i[-300:]) < 0.03 * self.parameters.N:
 				return True
 		return False
